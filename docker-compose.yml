@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:1.21.6-alpine
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    networks:
+      - wan
+      - lan
+    restart: unless-stopped
+    depends_on:
+      - node
+  node:
+    container_name: node
+    build: ./node
+    command: npm run start
+    networks:
+     - lan
+    restart: unless-stopped
+
+networks:
+  wan:
+    driver: bridge
+  lan:
+    driver: bridge
